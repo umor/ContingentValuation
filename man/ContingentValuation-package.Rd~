@@ -1,0 +1,36 @@
+\name{ContingentValuation-package}
+\alias{ContingentValuation-package}
+\alias{ContingentValuation}
+\docType{package}
+\title{
+Package estimates coefficients from contingent valuation studies and calculates willingness to pay.
+}
+\description{
+This Package will be helful after you have collected your data in a contingent valuation study and need to estimate the coefficients and afterwards want to calculate the estimated willingness to pay. In particular if you have doen a double bounded contingent valuation method it will be helpful.
+}
+\details{
+\tabular{ll}{
+Package: \tab ContingentValuation\cr
+Type: \tab Package\cr
+Version: \tab 1.0\cr
+Date: \tab 2012-11-24\cr
+License: \tab GPL-2\cr
+}
+The Package currently contains a function to estimate a double bounded countingent valuation model}
+\author{
+Ulrich B. Morawetz
+
+Maintainer: Ulrich B. Morawetz <ulrich.morawetz@boku.ac.at>
+}
+\references{
+T.C. Haab and K.E. McConnell, 2003 , Valuing Environmental and Natural Resources. The Econometrics of non-market Valuation.
+
+U.B. Morawetz, H. DeGroote, S.C. Kimenju, 2011 , Journal of Agriculturl and Resource Economics, 36(2):263-279.
+
+}
+\keyword{ package }
+\seealso{
+}
+\examples{
+No expamles
+}

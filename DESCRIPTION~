@@ -1,0 +1,11 @@
+Package: ContingentValuation
+Type: Package
+Title: Analyse Data from Contingent Valuation Method Surveys
+Version: 0.0.3
+Date: 2012-11-30
+Author: Ulrich B. Morawetz
+Maintainer: Ulrich B. Morawetz <ulrich.morawetz@boku.ac.at>
+LazyData: Yes
+Depends: maxLik, Formula, stats
+Description: The collection of functions allows to analyze data from contingent valuation surveys and to estimate the willingness to pay.
+License: GPL-2
