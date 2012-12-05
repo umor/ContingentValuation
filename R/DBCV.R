@@ -3,7 +3,7 @@
 DBCV <- function(x, ...) UseMethod("DBCV")
 
 
-DBCV.default <- function(x,y,z, data, initpar, method, ...)
+DBCV.default <- function(x,y,z, data, initpar, method, functionalForm, ...)
 {
   # some checks:
   
@@ -23,16 +23,16 @@ DBCV.default <- function(x,y,z, data, initpar, method, ...)
   if(!all((y[,2]==1|y[,2]==0))){
     stop(paste("Error: Check your data. '", colnames(y)[2], "' can only have the values 0 or 1.", sep=""))}
   # check if bid1<bid2 for yn&ny
-  if(!all(x[(y[,1]==1),1]<x[(y[,1]==1),2])){
+  if(!all(abs(x[(y[,1]==1),1])<abs(x[(y[,1]==1),2]))){
     stop(paste("Error: Check your data. At least once '", colnames(x)[1],"' > '", colnames(x)[2], "' for '",
                colnames(y)[1],"' = 1.", sep=""))  }
   # and bid1>bid2 for ny&nn
-  if(!all(x[(y[,1]==0),1]>x[(y[,1]==0),2])){
+  if(!all(abs(x[(y[,1]==0),1])>abs(x[(y[,1]==0),2]))){
     stop(paste("Error: Check your data. At least onece '", colnames(x)[1],"' < '", colnames(x)[2], "' for '",
                colnames(y)[1],"' = 0.", sep=""))}
   
   
-  est<-DBCVest(x,y,z, data, initpar, method)
+  est<-DBCVest(x,y,z, data, initpar, method, functionalForm)
   #est$fitted.values<-
   #est$residuals <- 
   est$call<-match.call
@@ -75,26 +75,59 @@ print.summary.DBCV <- function(x, ...)
 
 
 
-DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL, ...)
+DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
+                         functionalForm="linear", ...)
 {
   # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
   if(is.Formula(formula)==FALSE)
   {formula<-Formula(formula)}
+
+  if(functionalForm=="loglinear"){
+    
+    temp<-model.part(formula,lhs=0,rhs=1, data=data)
+    data$llinInc1 <- log((temp[,3]-temp[,1])/temp[,3])
+    data$llinInc2 <- log((temp[,3]-temp[,2])/temp[,3])
+    
+    
+    formula  <- paste(
+      as.character(formula(formula,lhs=1, rhs=0))[2], " ~ llinInc1 +  llinInc2| ",
+      as.character(formula(formula,lhs=0, rhs=2))[2], sep="")
+    formula<-formula(formula)
+    
+    if(is.Formula(formula)==FALSE)
+    {formula<-Formula(formula)}
+    
+    mf <-  model.frame(formula, data = data, 
+                       drop.unused.levels = TRUE, na.action="na.omit")
+    #attr(mf, "na.action")
+    
+    y  <-   model.part(formula, data = mf, lhs = 1, drop=TRUE)
+    x  <- model.matrix(formula, data = mf, rhs = 1)[,2:3]
+    z  <- model.matrix(formula, data = mf, rhs = 2)    
+    if(!is.null(attr(mf, "na.action"))){
+      temp <- temp[-attr(mf, "na.action"),]
+      data <- data[-attr(mf, "na.action"),]
+      }
+    
+    data<-data.frame(data, temp)
+    rm(temp)  
+    }else{  
   
   mf <- model.frame(formula, data = data, 
                     drop.unused.levels = TRUE, na.action="na.omit")
   y  <- model.part(formula, data = mf, lhs = 1)
   x  <- model.matrix(formula, data = mf, rhs = 1)[,-1]
   z  <- model.matrix(formula, data = mf, rhs = 2)
+    }
   
-  est <- DBCV.default(x,y,z, data=mf, initpar, method, ...)
+  est <- DBCV.default(x,y,z, data=data, initpar, method, functionalForm, ...)
   est$call <-match.call()
   est$formula <- formula
   est
 }
 
 
-DBCVest<-function(x,y,z, data, initpar, method)  # y= (yes1, yes2) x=(bid1,bid2), z=covariates
+DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes2) x=(bid1,bid2), z=covariates
 {
   
   
@@ -126,18 +159,19 @@ DBCVest<-function(x,y,z, data, initpar, method)  # y= (yes1, yes2) x=(bid1,bid2)
     #      pny[yes1==0&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==0&yes2==1,]))/rho - (1/rho*bid2[yes1==0&yes2==1])) - pnorm(crossprod(b,t(z[yes1==0&yes2==1,]))/rho - (1/rho*bid1[yes1==0&yes2==1]))
     #      pnn[yes1==0&yes2==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0&yes2==0,]))/rho - (1/rho*bid2[yes1==0&yes2==0]))
     
-    if(a>0){
-      pyy[yes1==1&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==1,])) - (a*bid2[yes1==1&yes2==1]))    
-      pyn[yes1==1&yes2==0]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid1[yes1==1&yes2==0])) - pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid2[yes1==1&yes2==0]))
-      pny[yes1==0&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid2[yes1==0&yes2==1])) - pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid1[yes1==0&yes2==1]))
-      pnn[yes1==0&yes2==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0&yes2==0,])) - (a*bid2[yes1==0&yes2==0]))
-    }else{
+     if(functionalForm=="linear"){
       pyy[yes1==1&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==1,])) + (a*bid2[yes1==1&yes2==1]))    
       pyn[yes1==1&yes2==0]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid1[yes1==1&yes2==0])) - pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid2[yes1==1&yes2==0]))
       pny[yes1==0&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid2[yes1==0&yes2==1])) - pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid1[yes1==0&yes2==1]))
       pnn[yes1==0&yes2==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0&yes2==0,])) + (a*bid2[yes1==0&yes2==0]))
     }
     
+    if(functionalForm=="loglinear"){
+      pyy[yes1==1&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==1,])) - (a*bid2[yes1==1&yes2==1]))    
+      pyn[yes1==1&yes2==0]<-     pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid1[yes1==1&yes2==0])) - pnorm(crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid2[yes1==1&yes2==0]))
+      pny[yes1==0&yes2==1]<-     pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid2[yes1==0&yes2==1])) - pnorm(crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid1[yes1==0&yes2==1]))
+      pnn[yes1==0&yes2==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0&yes2==0,])) - (a*bid2[yes1==0&yes2==0]))
+    }
     
     #now tell the function what it should produce as output.
     # we want the probability of an event, given a choice of parameters 
@@ -183,7 +217,8 @@ DBCVest<-function(x,y,z, data, initpar, method)  # y= (yes1, yes2) x=(bid1,bid2)
        vcov = vcov,
        LogLik = LogLik,
        df= df,
-       model = data)
+       model = data,
+       functionalForm = functionalForm)
   
 }
 

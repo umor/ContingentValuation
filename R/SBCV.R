@@ -23,7 +23,7 @@
 
 SBCV <- function(x, ...) UseMethod("SBCV")
 
-SBCV.default <- function(x,y,z, data, initpar, method, ...)
+SBCV.default <- function(x,y,z, data, initpar, method, functionalForm, ...)
 {
   # some checks:
   
@@ -38,7 +38,7 @@ SBCV.default <- function(x,y,z, data, initpar, method, ...)
     stop(paste("Error: Check your data. '", colnames(y)[1], "' can only have the values 0 or 1.", sep=""))}
   
   
-  est<-SBCVest(x,y,z, data, initpar, method)
+  est<-SBCVest(x,y,z, data, initpar, method, functionalForm)
   #est$fitted.values<-
   #est$residuals <- 
   est$call<-match.call
@@ -112,12 +112,13 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
     x  <- model.matrix(formula, data = mf, rhs = 1)[,2]
     z  <- model.matrix(formula, data = mf, rhs = 2)    
     if(!is.null(attr(mf, "na.action"))){
-    bidinc <- temp[-attr(mf, "na.action"),]}else{
-      bidinc <- temp  
-    } 
-    rm(temp)
-    data<-data.frame(data[-attr(mf, "na.action"),],bidinc)
-  }else{
+    temp <- temp[-attr(mf, "na.action"),]
+    data <- data[-attr(mf, "na.action"),]
+    }
+    
+    data<-data.frame(data, temp)
+    rm(temp)  
+    }else{
   
   mf <- model.frame(formula, data = data, 
                     drop.unused.levels = TRUE, na.action="na.omit")
@@ -129,14 +130,14 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   
   }
     
-  est <- SBCV.default(x,y,z, data=mf, initpar, method,  ...)
+  est <- SBCV.default(x,y,z, data=data, initpar, method, functionalForm, ...)
   est$call <-match.call()
   est$formula <- formula
   est
 }
 
 
-SBCVest<-function(x,y,z, data, initpar, method)  # y= (yes) x=(bid), z=covariates
+SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(bid), z=covariates
 {
   
   
@@ -163,13 +164,14 @@ SBCVest<-function(x,y,z, data, initpar, method)  # y= (yes) x=(bid), z=covariate
     py<- pn <- rep(NA, times=length(yes1))
     
     
-  #  if(a>0){
-  #    py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) + (a*bid1[yes1==1]))    
-  #    pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) + (a*bid1[yes1==0]))
-  #  }else{
+    if(functionalForm=="linear"){
+      py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) + (a*bid1[yes1==1]))    
+      pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) + (a*bid1[yes1==0]))
+    }
+    if(functionalForm=="loglinear"){
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) - (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) - (a*bid1[yes1==0]))
-  #  }
+    }
     
     
     #now tell the function what it should produce as output.
@@ -215,7 +217,8 @@ SBCVest<-function(x,y,z, data, initpar, method)  # y= (yes) x=(bid), z=covariate
        vcov = vcov,
        LogLik = LogLik,
        df= df,
-       model = data)
+       model = data,
+       functionalForm = functionalForm)
   
 }
 

@@ -18,7 +18,7 @@ The function SBCV estimates coefficients from a single-bounded contingent valuat
 
 \usage{
 SBCV(x, ...)
-\method{SBCV}{default}(x,y,z, data, initpar, method,...)
+\method{SBCV}{default}(x,y,z, data, initpar, method, functionalForm, ...)
 \method{SBCV}{formula}(formula, data=list(), initpar=NULL, method=NULL, functionalForm="linear", ...)
 \method{summary}{SBCV}(object, ...)
 \method{print}{SBCV}(x, ...)
@@ -46,7 +46,7 @@ where \emph{yes} is the reply to the survey question. This numeric variable are 
 For loglinear models 
 \deqn{yes ~ bid + income | z1 + z2 + ... + zn}{yes ~ bid + income | z1 + z2 + ... + zn}
 where a bid variable of the form 
-\deqn{log(\frac{income-bid}{income})}{log((income-bid)/income).}
+\deqn{log(\frac{income-bid}{income})}{log((income-bid)/income)}
 is generated.
 \emph{bid} is a numeric variables which is the bid offered to the subject.  \emph{z1} to\emph{zn} are addtional explainig, subject specific, variables. 
  
@@ -59,6 +59,7 @@ For identification the variance is fixed to one.
   \item{LogLik}{log-likelihood value}
   \item{df}{Degrees of freedom}
   \item{model}{data used to estimate the function}
+  \item{functionalForm}{The functional form used for the estimation}
 }
 \references{
 Haab, T.C. and McConnell, K.E. (2003), \emph{Valuing Environmental and Natural Resources. The Econometrics of non-market Valuation.} Cheltenham, UK: Edward Elgar 

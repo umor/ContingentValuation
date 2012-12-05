@@ -11,29 +11,24 @@ The function WTP_CV() calculates the coefficients from SBCV or DBCV models.
 
 \usage{
 WTP_CV (object, 
-        functionalForm = c("linear","loglinear"), 
         disp.pref   =  c("mean", "median"),  
         disp.subj = c("individual", "mean"),
-        newdata = NULL,
-        income=NULL 
+        newdata = NULL
                    )
 }
 \arguments{
   
   \item{object}{An object created by the estimation of SBCV or DBCV}
-  \item{functionalForm}{Either \code{linear} or \code{loglinear}.}
   \item{disp.pref}{Either \code{mean} or \code{median}.}   
   \item{disp.subj}{Either \code{individual} or \code{mean}.} 
   \item{newdata}{Either \code{NULL} or a data.frame}
   
-  \item{income}{Only if \code{functionalForm} is \code{loglinear}, \code{income} must be specified.}
   
   \item{\dots}{ currently not used  }
 }
 \details{
 The calculation of the willigness to pay is for probit \code{SBCV} and \code{DBCV}. 
 
-The \code{functionalForm} must be \code{linear} if the bids are not transformed or \code{loglinear} if the bids are of the form \deqn{log(\frac{income-bid}{income})}{log((income-bid)/income).} In the latter case, also the argument \code{income} must be specified.
 
 Dispersion of the preferences, \code{disp.pref}, is either \code{mean} or \code{median} depending on where the variance of the preverences is to be evaluated. In case of  \code{functionalForm}  is \code{linear} the resulting willingness to pay is the same for \code{mean} and \code{median}.
 
@@ -63,65 +58,61 @@ Ulrich B. Morawetz
 %}
 
 \examples{
- data("maizeWTP")
- require(Formula)
+# example linear
 
-# example
+data("maizeWTP")
+require(Formula)
+
 maizeDBCV<- 
- DBCV(yuYes1 + yuYes2~yuBid1 + yuBid2|age+gender+experimenter, 
- data=maizeWTP)
+  DBCV(yuYes1 + yuYes2~yuBid1 + yuBid2|age+gender+experimenter, 
+       data=maizeWTP, functionalForm="linear")
 maizeDBCV
 
 
 ## willigness to pay for all individually
 WTP_maizeDBCV.all.individual  <- WTP_CV(object=maizeDBCV, 
-                   functionalForm = "linear",
-                   disp.pref   = "mean",
-                   disp.subj = "individual"  
-                   )
+                                        disp.pref   = "mean",
+                                        disp.subj = "individual"  
+)
 # willigness to pay for mean individual (this means that also 
 # the mean of dummy variables is used
 # which might not always make sense)
 WTP_maizeDBCV.all.mean  <- WTP_CV(object=maizeDBCV, 
-                   functionalForm = "linear",
-                   disp.pref   = "mean",
-                   disp.subj = "mean"  
-                   )                   
+                                  disp.pref   = "mean",
+                                  disp.subj = "mean"  
+)                   
 
 ## willigness to pay for three individuals
 
 mySubjects<-data.frame("(Intercept)"=c(1,1,1), 
-           "age"=c(47,21,29),
-           "genderfemale"=c(0,1,0), 
-           "experimenterexperimenter2"=c(1,0,0), 
-           "experimenterexperimenter3"=c(0,0,0), 
-           "experimenterexperimenter4"=c(0,0,0), 
-           "experimenterexperimenter5"=c(0,0,0),
-           "experimenterexperimenter6"=c(0,0,0))
+                       "age"=c(47,21,29),
+                       "genderfemale"=c(0,1,0), 
+                       "experimenterexperimenter2"=c(1,0,0), 
+                       "experimenterexperimenter3"=c(0,0,0), 
+                       "experimenterexperimenter4"=c(0,0,0), 
+                       "experimenterexperimenter5"=c(0,0,0),
+                       "experimenterexperimenter6"=c(0,0,0))
 
 # colnames are not necessary
 
 
 # indivdual willigness to pay 
 WTP_maizeDBCV.mySubjects.individual    <- WTP_CV(object=maizeDBCV, 
-                   functionalForm = "linear",
-                   disp.pref   = "mean",
-                   disp.subj = "individual",  
-                   newdata=mySubjects
-                   )
+                                                 disp.pref   = "mean",
+                                                 disp.subj = "individual",  
+                                                 newdata=mySubjects
+)
 # willingeness to pay of the mean of the three mySubjects
 WTP_maizeDBCV.mySubjects.mean    <- WTP_CV(object=maizeDBCV, 
-                   functionalForm = "linear",
-                   disp.pref   = "mean",
-                   disp.subj = "mean",  
-                   newdata=mySubjects
-                   )
-
+                                           disp.pref   = "mean",
+                                           disp.subj = "mean",  
+                                           newdata=mySubjects
+)
 
 # plot something similar to a demand curve
 
 plot(sort(WTP_maizeDBCV.all.individual, decreasing=TRUE), type="l", 
-     lwd=2, ylab="willingness to pay", xlab="subjects")
+     lwd=2, ylab="willingness to pay", xlab="Consumers")
 
 }
 
