@@ -164,11 +164,11 @@ SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(b
     py<- pn <- rep(NA, times=length(yes1))
     
     
-    if(functionalForm=="linear"){
+    if(functionalForm=="loglinear"){
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) + (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) + (a*bid1[yes1==0]))
     }
-    if(functionalForm=="loglinear"){
+    if(functionalForm=="linear"){
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) - (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) - (a*bid1[yes1==0]))
     }
@@ -190,8 +190,8 @@ SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(b
       equInitPar <- paste(equInitPar,colnames(z)[lauf], sep="+")  
     }
     
-    startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid1, yes1))
-    #startMod<-lm( equInitPar, data=data.frame(z, bid2, yes2) )
+    #startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid1, yes1))
+    startMod<-lm( equInitPar, data=data.frame(z, bid1, yes1) )
     
     #  initpar<-c(startMod$coef[-2]/startMod$coef[2],-1/startMod$coef[2])
     initpar<-c(startMod$coef[-2], - startMod$coef[2])

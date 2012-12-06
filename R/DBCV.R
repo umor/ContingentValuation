@@ -30,6 +30,11 @@ DBCV.default <- function(x,y,z, data, initpar, method, functionalForm, ...)
   if(!all(abs(x[(y[,1]==0),1])>abs(x[(y[,1]==0),2]))){
     stop(paste("Error: Check your data. At least onece '", colnames(x)[1],"' < '", colnames(x)[2], "' for '",
                colnames(y)[1],"' = 0.", sep=""))}
+  # check if first right hand side of
+  # the formula consist of three elements
+#  charmatch("+", "all + some + all")
+#  grep("[zM]", c("Katze", "Hund", "Maus") )
+#  grepl( "+", strsplit("all + some + all", "+"))
   
   
   est<-DBCVest(x,y,z, data, initpar, method, functionalForm)
