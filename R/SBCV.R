@@ -85,10 +85,29 @@ print.summary.SBCV <- function(x, ...)
 
 SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL, 
                          functionalForm="linear",  ...)
-{
-  # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
+{ 
   if(is.Formula(formula)==FALSE)
   {formula<-Formula(formula)}
+  
+  # check if first right hand side of
+  # the formula consist of two elements for loglinear and of one for linear
+  if(functionalForm=="loglinear"){
+    if(length(strsplit(as.character(formula(formula, rhs=1, lhs=0))[2], 
+                       "+", fixed=TRUE)[[1]])!=2){
+      stop(cat("If functionalForm is 'loglinear' the first part of the right hand 
+        side of the equation must have two elements"))
+    }}
+  if(functionalForm=="linear"){
+    if(length(strsplit(as.character(formula(formula, rhs=1, lhs=0))[2], 
+                       "+", fixed=TRUE)[[1]])!=1){
+      stop(cat("If functionalForm is 'linear' the first part of the right hand 
+        side of the equation must have one element"))
+    }}
+  
+  
+  
+  
+  # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
   
   if(functionalForm=="loglinear"){
     
