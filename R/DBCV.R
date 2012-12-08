@@ -217,11 +217,12 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
   }
   
   #startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid2, yes2))
-  if(functionalForm=="linear"){
-  startMod<-lm( equInitPar, data=data.frame(z, bid2, yes2) ) }
-  
-  if(functionalForm=="loglinear"){
-  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) )}
+#  if(functionalForm=="linear"){
+#  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
+#      }
+#  if(functionalForm=="loglinear"){
+  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) )
+#      }
   
   #  initpar<-c(startMod$coef[-2]/startMod$coef[2], 1/startMod$coef[2])
     initpar<-c(startMod$coef[-2],startMod$coef[2])
