@@ -11,7 +11,7 @@ Double Bounded Contingent Valuation
 }
 
 \description{
-The function DBCV estimates coefficients from a double-bounded contingent valuation survey. It basically is a bivariat probit regression with the restriction that all the coefficients of both questions are identical.
+The function DBCV estimates coefficients from a double-bounded contingent valuation survey. It basically is a bivariat probit regression with the restriction that the coefficients of both questions are identical and the covariance between the two errors is zero (also called interval data model).
 }
 
 \usage{

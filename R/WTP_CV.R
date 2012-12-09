@@ -33,7 +33,7 @@ WTP_CV <- function(object,
              z  <- newdata 
              z  <- as.matrix(z)  
               }
-           result <-  -(z%*%object$coefficients[1:(ncol(z))])/object$coefficients[ncol(z)+1]   
+           result <-  (z%*%object$coefficients[1:(ncol(z))])/object$coefficients[ncol(z)+1]   
          }
 
          
@@ -49,7 +49,7 @@ WTP_CV <- function(object,
 #               )} 
              z  <- colMeans(newdata) }
              z  <- matrix(z, nrow=1)
-          result <-  -(z%*%object$coefficients[1:(length(z))])/object$coefficients[length(z)+1]
+          result <-  (z%*%object$coefficients[1:(length(z))])/object$coefficients[length(z)+1]
            
          }
         } 

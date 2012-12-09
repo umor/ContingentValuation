@@ -209,24 +209,63 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     ) )  
   }
   
+#  if(is.null(initpar)){
+#    
+#  equInitPar<-"yes2~1+bid2"
+#  for(lauf in 2:length(colnames(z))){
+#    equInitPar <- paste(equInitPar,colnames(z)[lauf], sep="+")  
+#  }
+#  
+#  #startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid2, yes2))
+##  if(functionalForm=="linear"){
+##  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
+##      }
+##  if(functionalForm=="loglinear"){
+#  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) )
+##      }
+#  
+#  #  initpar<-c(startMod$coef[-2]/startMod$coef[2], 1/startMod$coef[2])
+#    initpar<-c(startMod$coef[-2],startMod$coef[2])
+#  }
+  
+
   if(is.null(initpar)){
+
+    tempLong<-reshape(data=data.frame(yes1, yes2, bid1, bid2, z), 
+                      varying = list(c("yes1","yes2"), c("bid1", "bid2") ), 
+                      v.names = c("yes", "bid"), 
+                      timevar = "question",
+                      times =c("question1", "question2"),
+                      idvar = "person", 
+                      direction="long")
     
-  equInitPar<-"yes2~1+bid2"
-  for(lauf in 2:length(colnames(z))){
-    equInitPar <- paste(equInitPar,colnames(z)[lauf], sep="+")  
+    
+    equInitPar<-"yes~1+bid"
+    for(lauf in 2:length(colnames(z))){
+      equInitPar <- paste(equInitPar,colnames(z)[lauf], sep="+")  
+            }
+    
+    #startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid2, yes2))
+    #  if(functionalForm=="linear"){
+    #  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
+    #      }
+    #  if(functionalForm=="loglinear"){
+    startMod<-lm( equInitPar, data=tempLong )
+    #      }
+    
+    #  initpar<-c(startMod$coef[-2]/startMod$coef[2], 1/startMod$coef[2])
+    
+    if(functionalForm=="linear"){
+    initpar<-c(startMod$coef[-2], -startMod$coef[2])}
+
+    if(functionalForm=="loglinear"){ # in loglinear bids
+      # are negative as log() between 0 and 1 and hence
+      # coefficient is positive
+      initpar<-c(startMod$coef[-2], startMod$coef[2])}
+    
+    rm(tempLong)
   }
   
-  #startMod<-glm( equInitPar ,  family = binomial(link = "probit"),data=data.frame(z, bid2, yes2))
-#  if(functionalForm=="linear"){
-#  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
-#      }
-#  if(functionalForm=="loglinear"){
-  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) )
-#      }
-  
-  #  initpar<-c(startMod$coef[-2]/startMod$coef[2], 1/startMod$coef[2])
-    initpar<-c(startMod$coef[-2],startMod$coef[2])
-  }
   
   if(is.null(method)){  method<-"Newton-Raphson"}
   #result<-  optim(initpar, fn=ll, method="Nelder-Mead", control=list(fnscale=-1, trace=0), hessian=FALSE)
