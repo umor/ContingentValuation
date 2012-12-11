@@ -15,7 +15,7 @@ If you want to try it out, never the less, please do the following steps in your
 
 # now, after having prepared "devtools"
 # you should be ready to install "ContingentValuation" 
-# directly from github by wrting
+# directly from github by writing
 install_github('ContingentValuation', 'umor')
 ```
 

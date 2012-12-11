@@ -1,8 +1,8 @@
 Package: ContingentValuation
 Type: Package
 Title: Analyse Data from Contingent Valuation Method Surveys
-Version: 0.0.3
-Date: 2012-11-30
+Version: 0.0.4
+Date: 2012-12-11
 Author: Ulrich B. Morawetz
 Maintainer: Ulrich B. Morawetz <ulrich.morawetz@boku.ac.at>
 LazyData: Yes
