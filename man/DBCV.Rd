@@ -29,9 +29,9 @@ DBCV(x, ...)
   \item{z}{additional, subject specific, explaining variables}
   \item{formula}{a symbolic description of the model to estimat. See details below.}
   \item{data}{an otional data.frame containing the variables in the model.}
-  \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the glm() function from the stats-package with the second answer as dependent variable and the second bid offered as bid variable.}
+  \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the \code{lm()} function with the first and second answer as dependent variables after reshaping the data to "long format".}
   \item{method}{a character determining the optimization method in the function logLik(). If NULL, "Newton-Raphson" method is used. For alternatives and details see the documentation of logLik()}
-  \item{functionalForm}{Either "linear" or "loglinear".}
+  \item{functionalForm}{Either "linear" or "loglinearRUM".}
   \item{object}{an object of class \code{"DBCV"}, i.e., a fitted model}
   \item{\dots}{
    currently not used 
@@ -41,7 +41,7 @@ DBCV(x, ...)
 The formula must be given in the followin form: For functionalForm = "linear"
 \deqn{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}
 where \emph{yes1} and \emph{yes2} are the reply to the first and the second question. These numeric variables are 1 if the subject answered 'yes' and 0 if the subject answered 'no'. \emph{bid1} and \emph{bid2} are numeric variables which provide the first and the second bid offered to the subject. For subjects which answered 'yes' to the first bid, \eqn{bid1<bid2}{bid1<bid2}. for subjects which answered 'no' to the first bid, \eqn{bid1>bid2}{bid1>bid2}. \emph{z1} to \emph{zn} are addtional explaining, subject specific variables. 
- For functionalForm = "loglinear" For loglinear models 
+ For functionalForm = "loglinearRUM" for loglinear random utility models 
 \deqn{yes1 + yes2 ~ bid1 + bid2 + income | z1 + z2 + ... + zn}{yes ~ bid + income | z1 + z2 + ... + zn}
 where bid variables of the form 
 \deqn{log(\frac{income-bid}{income})}{log((income-bid)/income)}

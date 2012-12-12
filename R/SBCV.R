@@ -90,11 +90,11 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   {formula<-Formula(formula)}
   
   # check if first right hand side of
-  # the formula consist of two elements for loglinear and of one for linear
-  if(functionalForm=="loglinear"){
+  # the formula consist of two elements for loglinearRUM and of one for linear
+  if(functionalForm=="loglinearRUM"){
     if(length(strsplit(as.character(formula(formula, rhs=1, lhs=0))[2], 
                        "+", fixed=TRUE)[[1]])!=2){
-      stop(cat("If functionalForm is 'loglinear' the first part of the right hand 
+      stop(cat("If functionalForm is 'loglinearRUM' the first part of the right hand 
         side of the equation must have two elements"))
     }}
   if(functionalForm=="linear"){
@@ -109,7 +109,7 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   
   # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
   
-  if(functionalForm=="loglinear"){
+  if(functionalForm=="loglinearRUM"){
     
     temp<-model.part(formula,lhs=0,rhs=1, data=data)
     data$llinInc <- log((temp[,2]-temp[,1])/temp[,2])
@@ -183,7 +183,7 @@ SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(b
     py<- pn <- rep(NA, times=length(yes1))
     
     
-    if(functionalForm=="loglinear"){
+    if(functionalForm=="loglinearRUM"){
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) + (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) + (a*bid1[yes1==0]))
     }

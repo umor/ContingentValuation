@@ -89,10 +89,10 @@ WTP_CV <- function(object,
   
   #
   ########################################################### 
-  # loglinear
+  # loglinearRUM
   
   
-  if(object$functionalForm=="loglinear"){
+  if(object$functionalForm=="loglinearRUM"){
     # generate income and meanIncome variable
     if(is.null(newdata)){
       income <- object$model[,ncol(object$model)]
@@ -105,8 +105,8 @@ WTP_CV <- function(object,
         income <- mean(income)}
     }
     
-    # loglinear mean
-    if((disp.pref=="mean")==TRUE){ # for loglinear mean and median are different
+    # loglinearRUM mean
+    if((disp.pref=="mean")==TRUE){ # for loglinearRUM mean and median are different
       result <-  income-income*exp(-(z%*%object$coefficients[1:ncol(z)])  /object$coefficients[ncol(z)+1  ]+
                                      0.5*(1/((object$coefficients[ncol(z)+1  ])^2)))   
       if(CI=="KrinskyRobb"){    
@@ -118,8 +118,8 @@ WTP_CV <- function(object,
       }
       
     }
-    # loglinear median
-    if((disp.pref=="median")==TRUE){ # for loglinear mean and median are different
+    # loglinearRUM median
+    if((disp.pref=="median")==TRUE){ # for loglinearRUM mean and median are different
       result <- income- income*exp(-(z%*%object$coefficients[1:(ncol(z))])/object$coefficients[ncol(z)+1])   
       if(CI=="KrinskyRobb"){    
         for(i in 1:reps){

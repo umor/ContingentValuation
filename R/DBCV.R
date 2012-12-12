@@ -82,11 +82,11 @@ DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   {formula<-Formula(formula)}
     
   # check if first right hand side of
-  # the formula consist of three elements for loglinear and of two for linear
-  if(functionalForm=="loglinear"){
+  # the formula consist of three elements for loglinearRUM and of two for linear
+  if(functionalForm=="loglinearRUM"){
     if(length(strsplit(as.character(formula(formula, rhs=1, lhs=0))[2], 
                        "+", fixed=TRUE)[[1]])!=3){
-      stop(cat("If functionalForm is 'loglinear' the first part of the right hand 
+      stop(cat("If functionalForm is 'loglinearRUM' the first part of the right hand 
         side of the equation must have three elements"))
     }}
   if(functionalForm=="linear"){
@@ -99,7 +99,7 @@ DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   
   # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
 
-  if(functionalForm=="loglinear"){
+  if(functionalForm=="loglinearRUM"){
     
     temp<-model.part(formula,lhs=0,rhs=1, data=data)
     data$llinInc1 <- log((temp[,3]-temp[,1])/temp[,3])
@@ -172,7 +172,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     pyy<- pyn <- pny <- pnn <-   rep(NA, times=length(yes1))
     
      
-#     if(functionalForm=="loglinear"){
+#     if(functionalForm=="loglinearRUM"){
 #      pyy[yes1==1&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==1,])) + (a*bid2[yes1==1&yes2==1]))/1)    
 #      pyn[yes1==1&yes2==0]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid2[yes1==1&yes2==0]))/1) - pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid1[yes1==1&yes2==0]))/1)
 #      pny[yes1==0&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid1[yes1==0&yes2==1]))/1) - pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid2[yes1==0&yes2==1]))/1)
@@ -180,7 +180,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
 #    }
     
   
-    if(functionalForm=="loglinear"){
+    if(functionalForm=="loglinearRUM"){
       pyy[yes1==1&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==1,])) + (a*bid2[yes1==1&yes2==1]))/1)    
       pyn[yes1==1&yes2==0]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid1[yes1==1&yes2==0]))/1) - pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) + (a*bid2[yes1==1&yes2==0]))/1)
       pny[yes1==0&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid2[yes1==0&yes2==1]))/1) - pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) + (a*bid1[yes1==0&yes2==1]))/1)
@@ -220,7 +220,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
 ##  if(functionalForm=="linear"){
 ##  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
 ##      }
-##  if(functionalForm=="loglinear"){
+##  if(functionalForm=="loglinearRUM"){
 #  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) )
 ##      }
 #  
@@ -249,7 +249,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     #  if(functionalForm=="linear"){
     #  startMod<-lm( equInitPar, data=data.frame(z, "bid2"=I(-1*bid2), yes2) ) 
     #      }
-    #  if(functionalForm=="loglinear"){
+    #  if(functionalForm=="loglinearRUM"){
     startMod<-lm( equInitPar, data=tempLong )
     #      }
     
@@ -258,7 +258,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     if(functionalForm=="linear"){
     initpar<-c(startMod$coef[-2], -startMod$coef[2])}
 
-    if(functionalForm=="loglinear"){ # in loglinear bids
+    if(functionalForm=="loglinearRUM"){ # in loglinearRUM bids
       # are negative as log() between 0 and 1 and hence
       # coefficient is positive
       initpar<-c(startMod$coef[-2], startMod$coef[2])}

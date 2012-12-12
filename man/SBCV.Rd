@@ -33,7 +33,7 @@ SBCV(x, ...)
   \item{data}{an otional data.frame containing the variables in the model.}
   \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the glm() function from the stats-package.}
   \item{method}{a character determining the optimization method in the function logLik(). If NULL, "Newton-Raphson" method is used. For alternatives and details see the documentation of logLik()}
-  \item{functionalForm}{Either "linear" or "loglinear".}
+  \item{functionalForm}{Either "linear" or "loglinearRUM".}
   \item{object}{an object of class \code{"SBCV"}, i.e., a fitted model}
   \item{\dots}{
    currently not used 
@@ -43,7 +43,7 @@ SBCV(x, ...)
 The formula must be given in the following forms: For linear models
 \deqn{yes ~ bid | z1 + z2 + ... + zn}{yes ~ bid | z1 + z2 + ... + zn}
 where \emph{yes} is the reply to the survey question. This numeric variable are 1 if the subject answered 'yes' and 0 if the subject answered 'no'.
-For loglinear models 
+For loglinearRUM models 
 \deqn{yes ~ bid + income | z1 + z2 + ... + zn}{yes ~ bid + income | z1 + z2 + ... + zn}
 where a bid variable of the form 
 \deqn{log(\frac{income-bid}{income})}{log((income-bid)/income)}
