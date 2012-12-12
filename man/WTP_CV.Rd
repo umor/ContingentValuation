@@ -84,10 +84,11 @@ WTP_maizeDBCV.all.mean  <- WTP_CV(object=maizeDBCV,
 ## willigness to pay for three individuals
 
 mySubjects<-data.frame("age"=c(47,21,29),
-                       "gender"=relevel(factor(c("male","female","female")),
-                                        ref=levels(maizeWTP$gender)[1]), 
+                       "gender"=factor(c("male","female","female"),
+                        levels=levels(maizeWTP$gender)), 
                        "experimenter"=factor(c(
-                        "experimenter3", "experimenter1", "experimenter6"))
+                        "experimenter3", "experimenter1", "experimenter6"),
+                        levels=levels(maizeWTP$experimenter))
                          )
 
 
