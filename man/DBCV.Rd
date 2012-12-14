@@ -31,7 +31,7 @@ DBCV(x, ...)
   \item{data}{an otional data.frame containing the variables in the model.}
   \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the \code{lm()} function with the first and second answer as dependent variables after reshaping the data to "long format".}
   \item{method}{a character determining the optimization method in the function logLik(). If NULL, "Newton-Raphson" method is used. For alternatives and details see the documentation of logLik()}
-  \item{functionalForm}{Either "linear" or "loglinearRUM".}
+  \item{functionalForm}{Either "linear", "loglinearWTP" or "loglinearRUM".}
   \item{object}{an object of class \code{"DBCV"}, i.e., a fitted model}
   \item{\dots}{
    currently not used 
@@ -41,6 +41,9 @@ DBCV(x, ...)
 The formula must be given in the followin form: For functionalForm = "linear"
 \deqn{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}
 where \emph{yes1} and \emph{yes2} are the reply to the first and the second question. These numeric variables are 1 if the subject answered 'yes' and 0 if the subject answered 'no'. \emph{bid1} and \emph{bid2} are numeric variables which provide the first and the second bid offered to the subject. For subjects which answered 'yes' to the first bid, \eqn{bid1<bid2}{bid1<bid2}. for subjects which answered 'no' to the first bid, \eqn{bid1>bid2}{bid1>bid2}. \emph{z1} to \emph{zn} are addtional explaining, subject specific variables. 
+For functionalForm "loglinearWTP" 
+\deqn{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}
+where bid variables \deqn{log(bid)}{log(bid)} are generated.
  For functionalForm = "loglinearRUM" for loglinear random utility models 
 \deqn{yes1 + yes2 ~ bid1 + bid2 + income | z1 + z2 + ... + zn}{yes ~ bid + income | z1 + z2 + ... + zn}
 where bid variables of the form 
@@ -60,8 +63,6 @@ For identification the variance is fixed to one.
 }
 \references{
 Haab, T.C. and McConnell, K.E. (2003), \emph{Valuing Environmental and Natural Resources. The Econometrics of non-market Valuation.} Cheltenham, UK: Edward Elgar 
-
-Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agriculturl and Resource Economics}, 36(2):263-279.
 }
 \author{
 Ulrich B. Morawetz

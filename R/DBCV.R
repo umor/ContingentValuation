@@ -98,7 +98,55 @@ DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   
   
   # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
+### data preparation if functional form is linear
+ if(functionalForm=="linear"){  
+  
+  mf <- model.frame(formula, data = data, 
+                    drop.unused.levels = TRUE, na.action="na.omit")
+  y  <- model.part(formula, data = mf, lhs = 1)
+  x  <- model.matrix(formula, data = mf, rhs = 1)[,-1]
+  z  <- model.matrix(formula, data = mf, rhs = 2)
 
+  if(!is.null(attr(mf, "na.action"))){
+    data <- data[-attr(mf, "na.action"),]}
+ 
+  attr(x,"varName") <-  names(mf)[3:4]
+  
+ 
+ }
+
+### data prepartion if functional form is loglinearWTP  
+  
+  if(functionalForm=="loglinearWTP"){  
+  # check if all bids are >0
+    temp<-model.part(formula,lhs=0,rhs=1, data=data)
+    if(!all(temp[,1]>0, na.rm=TRUE)){
+      stop(cat("At least one ", names(temp)[1] ," is smaller or equal zero. This is a problem if functionalForm is loglinearWTP."))
+    }
+    if(!all(temp[,2]>0, na.rm=TRUE)){
+      stop(cat("At least one ", names(temp)[2] ," is smaller or equal zero. This is a problem if functionalForm is loglinearWTP."))
+    }
+    
+   mf <- model.frame(formula, data = data, 
+                      drop.unused.levels = TRUE, na.action="na.omit")
+    y  <- model.part(formula, data = mf, lhs = 1)
+    x  <- model.matrix(formula, data = mf, rhs = 1)[,-1]
+    x  <- log(x)
+    z  <- model.matrix(formula, data = mf, rhs = 2)
+
+    if(!is.null(attr(mf, "na.action"))){
+      data <- data[-attr(mf, "na.action"),]}
+
+    # add log to data
+    data[, (ncol(data)+1):(ncol(data)+2)]<-log(data[,names(temp)])
+    names(data)[c((ncol(data)-1),ncol(data))] <- paste("log(",names(temp),")", sep="")
+    attr(x,"varName") <-  names(data)[c((ncol(data)-1),ncol(data))]
+    
+  
+  }
+  
+  
+ ### data preparation if functionalForm is loglinearRUM  
   if(functionalForm=="loglinearRUM"){
     
     temp<-model.part(formula,lhs=0,rhs=1, data=data)
@@ -124,18 +172,14 @@ DBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
     if(!is.null(attr(mf, "na.action"))){
       temp <- temp[-attr(mf, "na.action"),]
       data <- data[-attr(mf, "na.action"),]
-      }
+    }
     
     data<-data.frame(data, temp)
+    attr(x,"varName") <-  paste("log((", names(temp)[3],"-",names(temp)[1:2],")/",
+                                 names(temp)[3],")", sep="")
     rm(temp)  
-    }else{  
+  }
   
-  mf <- model.frame(formula, data = data, 
-                    drop.unused.levels = TRUE, na.action="na.omit")
-  y  <- model.part(formula, data = mf, lhs = 1)
-  x  <- model.matrix(formula, data = mf, rhs = 1)[,-1]
-  z  <- model.matrix(formula, data = mf, rhs = 2)
-    }
   
   est <- DBCV.default(x,y,z, data=data, initpar, method, functionalForm, ...)
   est$call <-match.call()
@@ -189,7 +233,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     
     
     
-    if(functionalForm=="linear"){
+    if(functionalForm=="linear"|functionalForm=="loglinearWTP"){
       pyy[yes1==1&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==1,])) - (a*bid2[yes1==1&yes2==1]))/1)   
       pyn[yes1==1&yes2==0]<-     pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid1[yes1==1&yes2==0]))/1) - pnorm((crossprod(b,t(z[yes1==1&yes2==0,])) - (a*bid2[yes1==1&yes2==0]))/1)
       pny[yes1==0&yes2==1]<-     pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid2[yes1==0&yes2==1]))/1) - pnorm((crossprod(b,t(z[yes1==0&yes2==1,])) - (a*bid1[yes1==0&yes2==1]))/1)
@@ -255,7 +299,7 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
     
     #  initpar<-c(startMod$coef[-2]/startMod$coef[2], 1/startMod$coef[2])
     
-    if(functionalForm=="linear"){
+    if(functionalForm=="linear"|functionalForm=="loglinearWTP"){
     initpar<-c(startMod$coef[-2], -startMod$coef[2])}
 
     if(functionalForm=="loglinearRUM"){ # in loglinearRUM bids
@@ -272,8 +316,10 @@ DBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes1, yes
   result<-maxLik(ll, start=initpar, method=method)
   
   
+  
+  
   coef    <- result$estimate
-  names(coef)<-c(colnames(z), paste(colnames(x)[1],"=",colnames(x)[2],sep=""))
+  names(coef)<-c(colnames(z), paste(attr(x, "varName")[1],"=",attr(x, "varName")[2],sep=""))
   df      <- nrow(y)-length(coef)
   LogLik <- result$maximum
    hessian <- result$hessian

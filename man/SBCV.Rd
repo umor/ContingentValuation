@@ -33,7 +33,7 @@ SBCV(x, ...)
   \item{data}{an otional data.frame containing the variables in the model.}
   \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the glm() function from the stats-package.}
   \item{method}{a character determining the optimization method in the function logLik(). If NULL, "Newton-Raphson" method is used. For alternatives and details see the documentation of logLik()}
-  \item{functionalForm}{Either "linear" or "loglinearRUM".}
+  \item{functionalForm}{Either "linear", "loglinearWTP" or "loglinearRUM".}
   \item{object}{an object of class \code{"SBCV"}, i.e., a fitted model}
   \item{\dots}{
    currently not used 
@@ -43,11 +43,16 @@ SBCV(x, ...)
 The formula must be given in the following forms: For linear models
 \deqn{yes ~ bid | z1 + z2 + ... + zn}{yes ~ bid | z1 + z2 + ... + zn}
 where \emph{yes} is the reply to the survey question. This numeric variable are 1 if the subject answered 'yes' and 0 if the subject answered 'no'.
+For loglinearWTP models 
+\deqn{yes ~ bid | z1 + z2 + ... + zn}{yes ~ bid | z1 + z2 + ... + zn}
+where a bid variable
+\deqn{log(bid)}{log(bid)} is generated.
 For loglinearRUM models 
 \deqn{yes ~ bid + income | z1 + z2 + ... + zn}{yes ~ bid + income | z1 + z2 + ... + zn}
 where a bid variable of the form 
 \deqn{log(\frac{income-bid}{income})}{log((income-bid)/income)}
 is generated.
+
 \emph{bid} is a numeric variables which is the bid offered to the subject.  \emph{z1} to\emph{zn} are addtional explainig, subject specific, variables. 
  
 For identification the variance is fixed to one.
@@ -64,7 +69,6 @@ For identification the variance is fixed to one.
 \references{
 Haab, T.C. and McConnell, K.E. (2003), \emph{Valuing Environmental and Natural Resources. The Econometrics of non-market Valuation.} Cheltenham, UK: Edward Elgar 
 
-Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agriculturl and Resource Economics}, 36(2):263-279.
 }
 \author{
 Ulrich B. Morawetz

@@ -1,25 +1,6 @@
 
 
 
-#SBCV<- function(formula, data, ... ){
-#
-# if(is.Formula(formula)==FALSE){  
-# formula  <- Formula(formula)
-# }
-# 
-# formulaglm  <-  paste(
-# as.character(formula(formula, lhs=1))[2],  
-# paste(as.character(formula(formula, lhs = 0, rhs = 2)), collapse=""), " + ",
-# as.character(formula(formula, lhs = 0, rhs = 1))[2], sep="")
-# 
-# 
-# result <-  glm(formulaglm,  family = binomial(link = "probit"),data=data, ...)
-# 
-# result$formula<-formula
-# 
-# return(result)
-#}
-
 
 SBCV <- function(x, ...) UseMethod("SBCV")
 
@@ -89,6 +70,7 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
   if(is.Formula(formula)==FALSE)
   {formula<-Formula(formula)}
   
+### some checks  
   # check if first right hand side of
   # the formula consist of two elements for loglinearRUM and of one for linear
   if(functionalForm=="loglinearRUM"){
@@ -97,23 +79,69 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
       stop(cat("If functionalForm is 'loglinearRUM' the first part of the right hand 
         side of the equation must have two elements"))
     }}
+
   if(functionalForm=="linear"){
     if(length(strsplit(as.character(formula(formula, rhs=1, lhs=0))[2], 
                        "+", fixed=TRUE)[[1]])!=1){
       stop(cat("If functionalForm is 'linear' the first part of the right hand 
         side of the equation must have one element"))
     }}
+
+  ### data preparation if linear   
+  
+  if(functionalForm=="linear"){
+  
+  mf <- model.frame(formula, data = data, 
+                    drop.unused.levels = TRUE, na.action="na.omit")
+  #attr(mf, "na.action")
+  
+  y  <- model.part(formula, data = mf, lhs = 1, drop=TRUE)
+  x  <- model.matrix(formula, data = mf, rhs = 1)[,2]
+  z  <- model.matrix(formula, data = mf, rhs = 2)
+  
+  if(!is.null(attr(mf, "na.action"))){
+  data <- data[-attr(mf, "na.action"),]}
+  
+  attr(x,"varName") <-  names(data)[which(names(data)==
+                                            as.character(formula(formula, lhs=0 , 
+                                                                 rhs=1))[2])] 
+  }
+  
+ #####  data preparation if loglinearWTP
+  if(functionalForm=="loglinearWTP"){
+
+    temp<-model.part(formula,lhs=0,rhs=1, data=data)
+    if(!all(temp>0, na.rm=TRUE)){
+      stop(cat("At least one bid is smaller or equal zero. This is a problem
+               if functionalForm is loglinearWTP."))
+    }
+      
+     mf <- model.frame(formula, data = data, 
+                      drop.unused.levels = TRUE, na.action="na.omit")
+    #attr(mf, "na.action")
+    
+    y  <- model.part(formula, data = mf, lhs = 1, drop=TRUE)
+    x  <- model.matrix(formula, data = mf, rhs = 1)[,2]
+    x  <- log(x)
+    z  <- model.matrix(formula, data = mf, rhs = 2)
+    
+    if(!is.null(attr(mf, "na.action"))){
+    data <- data[-attr(mf, "na.action"),]}
+    # add log to data
+    bidVarPos<-which(names(data)==as.character(formula(formula, lhs=0 , rhs=1))[2])
+    data[, ncol(data)+1]<-log(data[, bidVarPos])
+    names(data)[ncol(data)] <- paste("log(",names(data)[bidVarPos],")" , sep="")
+    attr(x,"varName") <-  names(data)[ncol(data)] 
+  }
   
   
-  
-  
-  # mf <- model.frame(formula=formula, data=data, drop.unused.levels=TRUE)
+  #### data preparation if loglinearRUM
   
   if(functionalForm=="loglinearRUM"){
     
     temp<-model.part(formula,lhs=0,rhs=1, data=data)
     data$llinInc <- log((temp[,2]-temp[,1])/temp[,2])
-
+    
     
     formula  <- paste(
       as.character(formula(formula,lhs=1, rhs=0))[2], " ~ llinInc | ",
@@ -124,31 +152,25 @@ SBCV.formula <- function(formula, data=list(), initpar=NULL, method=NULL,
     {formula<-Formula(formula)}
     
     mf <-  model.frame(formula, data = data, 
-                      drop.unused.levels = TRUE, na.action="na.omit")
+                       drop.unused.levels = TRUE, na.action="na.omit")
     #attr(mf, "na.action")
     
     y  <-   model.part(formula, data = mf, lhs = 1, drop=TRUE)
     x  <- model.matrix(formula, data = mf, rhs = 1)[,2]
     z  <- model.matrix(formula, data = mf, rhs = 2)    
     if(!is.null(attr(mf, "na.action"))){
-    temp <- temp[-attr(mf, "na.action"),]
-    data <- data[-attr(mf, "na.action"),]
+      temp <- temp[-attr(mf, "na.action"),]
+      data <- data[-attr(mf, "na.action"),]
+  attr(x,"varName") <- paste("log((", names(temp)[2],
+               "-",names(temp)[1],")/", names(temp)[2], ")" , sep="")
     }
     
     data<-data.frame(data, temp)
     rm(temp)  
-    }else{
-  
-  mf <- model.frame(formula, data = data, 
-                    drop.unused.levels = TRUE, na.action="na.omit")
-  #attr(mf, "na.action")
-  
-  y  <- model.part(formula, data = mf, lhs = 1, drop=TRUE)
-  x  <- model.matrix(formula, data = mf, rhs = 1)[,2]
-  z  <- model.matrix(formula, data = mf, rhs = 2)
-  
   }
-    
+  
+  
+  
   est <- SBCV.default(x,y,z, data=data, initpar, method, functionalForm, ...)
   est$call <-match.call()
   est$formula <- formula
@@ -187,7 +209,7 @@ SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(b
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) + (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) + (a*bid1[yes1==0]))
     }
-    if(functionalForm=="linear"){
+    if(functionalForm=="linear" | functionalForm=="loglinearWTP"){
       py[yes1==1]<-     pnorm(crossprod(b,t(z[yes1==1,])) - (a*bid1[yes1==1]))    
       pn[yes1==0]<- 1 - pnorm(crossprod(b,t(z[yes1==0,])) - (a*bid1[yes1==0]))
     }
@@ -223,7 +245,7 @@ SBCVest<-function(x,y,z, data, initpar, method, functionalForm)  # y= (yes) x=(b
  #  browser()
   
   coef    <- result$estimate
-  names(coef)<-c(colnames(z), colnames(data)[2])
+  names(coef)<-c(colnames(z), attr(x, "varName") )
   df      <- length(y)-length(coef)
   LogLik <- result$maximum
   #hessian <- result$hessian
