@@ -38,7 +38,7 @@ Dispersion of the preferences, \code{disp.pref}, is either \code{mean} or \code{
 
 \code{disp.subj} is either \code{individual} or \code{mean}. If \code{individual} and \code{newdata} is  \code{NULL}, then the willigness to pay is calculated for each person in the data used to estimate the object. If \code{individual} and in \code{newdata} has a \code{data.frame}, then the willigness to pay is calculated for these data. If \code{mean} the mean of the data provided in  \code{newdata} (or, if \code{NULL}, all the the data used  to estimate the object) is calculated and the willigness to pay is calculated for the mean subject. 
 
-If \code{newdata} is \code{NULL}, all subjects used for the estimation of the object are used, if a \code{data.frame} is given, these data are used. The \code{data.frame} must consist of all the variables used to estimate the object. They must be of the same type (factor, numeric, ...) and have the same names as the data used to estimate the object. Only the bid variable(s) and the intercept are not needed. If \code{functionalForm} is \code{loglinearRUM}, then the last variable of data.frame must be the income.
+If \code{newdata} is \code{NULL}, all subjects used for the estimation of the object are used, if a \code{data.frame} is given, these data are used. The \code{data.frame} must consist of all the variables used to estimate the object. They must be of the same type (factor, numeric, ...) and have the same names as the data used to estimate the object. Only the bid variable(s) and the intercept are not needed. If \code{functionalForm} is \code{loglinearRUM}, then the last variable of \code{data.frame} must be the income.
 
 }
 \value{A matrix with calculated willingness to pay and the confidence interval.

@@ -62,13 +62,6 @@ WTP_CV <- function(object,
   }
   
   
-  
-  #(z%*%object$coefficients[1:(length(z))])/object$coefficients[length(z)+1]
-  #(z%*%b2[1:(length(z))])/b2[length(z)+1]
-  
-  
-  
-  #
   ########################################################### 
   # linear
   
@@ -85,6 +78,38 @@ WTP_CV <- function(object,
       }
       quants <- t( apply(X=WTPsim, MARGIN=1 , FUN=quantile, probs=probs ))
     }
+  }     
+
+  #
+  ########################################################### 
+  # loglinearWTP
+  
+  if(object$functionalForm=="loglinearWTP"){
+
+    # loglinearWTP mean
+    if((disp.pref=="mean")==TRUE){ # for loglinearWTP mean and median are different
+      result <-  exp((z%*%object$coefficients[1:ncol(z)])/object$coefficients[ncol(z)+1]+0.5*(-1/object$coefficients[ncol(z)+1])^2)
+      if(CI=="KrinskyRobb"){    
+        for(i in 1:reps){
+          b2<- b + C%*%rnorm(k)
+          WTPsim[,i] <-  exp((z%*%b2[1:r])/b2[r+1]+0.5*(-1/b2[r+1])^2)
+        }
+        quants <- t( apply(X=WTPsim, MARGIN=1 , FUN=quantile, probs=probs ))
+      }
+      
+    }
+    # loglinearWTP median
+    if((disp.pref=="median")==TRUE){ # for loglinearWTP mean and median are different
+      result <-  exp((z%*%object$coefficients[1:ncol(z)])/object$coefficients[ncol(z)+1])
+      if(CI=="KrinskyRobb"){    
+        for(i in 1:reps){
+          b2<- b + C%*%rnorm(k)
+          WTPsim[,i] <- exp((z%*%b2[1:r])/b2[r+1]) 
+        }
+        quants <- t( apply(X=WTPsim, MARGIN=1 , FUN=quantile, probs=probs ))
+      }
+    }
+    
   }     
   
   #
@@ -131,6 +156,11 @@ WTP_CV <- function(object,
     }
     
   }
+  
+  
+  
+  
+  
   ###############################################   
   
   if(CI=="KrinskyRobb"){result<- cbind(result,quants)}
