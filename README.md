@@ -3,7 +3,7 @@ Contingent Valuation
 
 this is a Package for R (www.r-project.org) to analyze data from Contingent Valuation Surveys, as frequently used to value public goods. The package is still under development.
 
-If you want to try it out, never the less, please do the following steps in your R command line
+If you want to try it out please take the following steps in your R command line
 
 ```
 # if you have not done so already
