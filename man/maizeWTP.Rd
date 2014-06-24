@@ -16,7 +16,7 @@ Dataset 'maizeWTP'
       \item{yuBid2}{A numeric variable giving the second bid for a 2kg package of yellow unfortified maize offered to the respondent (in Kenyan Shillings).}
       \item{yuYes1}{A numeric variable which is 1 of the respondent said 'yes' to the first bid for a 2k package of yellow unfortified maize and 0 if the reply was 'no'.}
       \item{yuYes2}{A numeric variable which is 1 of the respondent said 'yes' to the second bid for a 2k package of yellow unfortified maize and 0 if the reply was 'no'.}
-      \item{gender}{A factor with the levels 'femal' and 'male' giving the gender of the respondent.}
+      \item{gender}{A factor with the levels 'female' and 'male' giving the gender of the respondent.}
       \item{age}{A numeric variable giving the age of the respondent}
       \item{experimenter}{A factor with six levels depending which experimenter conducted the survey}
      
@@ -30,7 +30,7 @@ Dataset 'maizeWTP'
 }
 
 \references{
-Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agriculturl and Resource Economics}, 36(2):263-279.
+Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agricultural and Resource Economics}, 36(2):263-279.
 
 Kimenju, S.C, Morawetz, U.B. and DeGroote, H.(2005)
 Comparing Contingent Valuation Method, Choice Experiments and

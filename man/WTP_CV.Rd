@@ -26,17 +26,17 @@ WTP_CV (object,
   \item{disp.subj}{Either \code{individual} or \code{mean}.} 
   \item{newdata}{Either \code{NULL} or a data.frame}
   \item{CI}{Either "KrinskyRobb" or "none".}
-  \item{probs}{A numeric vector of of probabilites with values in [0,1]}
-  \item{reps}{Nuber of draws for KrinskyRobb CI}
+  \item{probs}{A numeric vector of of probabilities with values in [0,1]}
+  \item{reps}{Number of draws for KrinskyRobb CI}
   \item{\dots}{ currently not used  }
 }
 \details{
-The calculation of the willigness to pay is for probit \code{SBCV} and \code{DBCV}. 
+The calculation of the willingness to pay is for probit \code{SBCV} and \code{DBCV}. 
 
 
-Dispersion of the preferences, \code{disp.pref}, is either \code{mean} or \code{median} depending on which measure of central tendency of the preverences should be used. In case of  \code{functionalForm}  is \code{linear} the resulting willingness to pay is the same for \code{mean} and \code{median}.
+Dispersion of the preferences, \code{disp.pref}, is either \code{mean} or \code{median} depending on which measure of central tendency of the preferences should be used. In case of  \code{functionalForm}  is \code{linear} the resulting willingness to pay is the same for \code{mean} and \code{median}.
 
-\code{disp.subj} is either \code{individual} or \code{mean}. If \code{individual} and \code{newdata} is  \code{NULL}, then the willigness to pay is calculated for each person in the data used to estimate the object. If \code{individual} and in \code{newdata} has a \code{data.frame}, then the willigness to pay is calculated for these data. If \code{mean} the mean of the data provided in  \code{newdata} (or, if \code{NULL}, all the the data used  to estimate the object) is calculated and the willigness to pay is calculated for the mean subject. 
+\code{disp.subj} is either \code{individual} or \code{mean}. If \code{individual} and \code{newdata} is  \code{NULL}, then the willingness to pay is calculated for each person in the data used to estimate the object. If \code{individual} and in \code{newdata} has a \code{data.frame}, then the willingness to pay is calculated for these data. If \code{mean} the mean of the data provided in  \code{newdata} (or, if \code{NULL}, all the the data used  to estimate the object) is calculated and the willingness to pay is calculated for the mean subject. 
 
 If \code{newdata} is \code{NULL}, all subjects used for the estimation of the object are used, if a \code{data.frame} is given, these data are used. The \code{data.frame} must consist of all the variables used to estimate the object. They must be of the same type (factor, numeric, ...) and have the same names as the data used to estimate the object. Only the bid variable(s) and the intercept are not needed. If \code{functionalForm} is \code{loglinearRUM}, then the last variable of \code{data.frame} must be the income.
 

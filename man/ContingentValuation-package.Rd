@@ -6,7 +6,7 @@
 Package estimates coefficients from contingent valuation studies and calculates willingness to pay.
 }
 \description{
-This Package will be helful after you have collected your data in a contingent valuation study and need to estimate the coefficients and afterwards want to calculate the estimated willingness to pay. 
+This Package will be helpful after you have collected your data in a contingent valuation study and need to estimate the coefficients and afterwards want to calculate the estimated willingness to pay. 
 }
 \details{
 \tabular{ll}{
@@ -25,7 +25,7 @@ Maintainer: Morawetz, U.B. <ulrich.morawetz@boku.ac.at>
 \references{
 Haab, T.C. and McConnell, K.E. (2003), \emph{Valuing Environmental and Natural Resources. The Econometrics of non-market Valuation.} Cheltenham, UK: Edward Elgar 
 
-Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agriculturl and Resource Economics}, 36(2):263-279.
+Morawetz, U.B., DeGroote, H. and Kimenju, S.C. (2011) Improving the Use of Experimental Auctions in Africa: Theory and Evidence, \emph{Journal of Agricultural and Resource Economics}, 36(2):263-279.
 
 }
 \keyword{Contingent Valuation}

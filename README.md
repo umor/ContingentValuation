@@ -19,5 +19,5 @@ If you want to try it out please take the following steps in your R command line
 install_github('ContingentValuation', 'umor')
 ```
 
-Please let me know when you have comments on the package.
+Please let me know if you have comments on the package.
 

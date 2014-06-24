@@ -25,11 +25,11 @@ DBCV(x, ...)
 \arguments{
   
   \item{y}{a matrix with two columns. The first column is 1 of the first question was answered with 'yes' and and 0 if it was answered with 'no'. The second column is 1 of the second question was answered with 'yes' and and 0 if it was answered with 'no'.}
-  \item{x}{a matrix with two columns. The first column is the offerd bid in the first question, the second column is the offered bid in the second question.}
+  \item{x}{a matrix with two columns. The first column is the offered bid in the first question, the second column is the offered bid in the second question.}
   \item{z}{additional, subject specific, explaining variables}
-  \item{formula}{a symbolic description of the model to estimat. See details below.}
-  \item{data}{an otional data.frame containing the variables in the model.}
-  \item{initpar}{a vector of inital parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the \code{lm()} function with the first and second answer as dependent variables after reshaping the data to "long format".}
+  \item{formula}{a symbolic description of the model to estimate. See details below.}
+  \item{data}{an optional data.frame containing the variables in the model.}
+  \item{initpar}{a vector of initial parameters for logLik() function from the logLik-package. The vector consist of an initial parameter for the bid, the intercept and each of the explaining variables, in this order. If NULL, the initial values are estimated with the \code{lm()} function with the first and second answer as dependent variables after reshaping the data to "long format".}
   \item{method}{a character determining the optimization method in the function logLik(). If NULL, "Newton-Raphson" method is used. For alternatives and details see the documentation of logLik()}
   \item{functionalForm}{Either "linear", "loglinearWTP" or "loglinearRUM".}
   \item{object}{an object of class \code{"DBCV"}, i.e., a fitted model}
@@ -38,9 +38,9 @@ DBCV(x, ...)
   }
 }
 \details{
-The formula must be given in the followin form: For functionalForm = "linear"
+The formula must be given in the following form: For functionalForm = "linear"
 \deqn{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}
-where \emph{yes1} and \emph{yes2} are the reply to the first and the second question. These numeric variables are 1 if the subject answered 'yes' and 0 if the subject answered 'no'. \emph{bid1} and \emph{bid2} are numeric variables which provide the first and the second bid offered to the subject. For subjects which answered 'yes' to the first bid, \eqn{bid1<bid2}{bid1<bid2}. for subjects which answered 'no' to the first bid, \eqn{bid1>bid2}{bid1>bid2}. \emph{z1} to \emph{zn} are addtional explaining, subject specific variables. 
+where \emph{yes1} and \emph{yes2} are the reply to the first and the second question. These numeric variables are 1 if the subject answered 'yes' and 0 if the subject answered 'no'. \emph{bid1} and \emph{bid2} are numeric variables which provide the first and the second bid offered to the subject. For subjects which answered 'yes' to the first bid, \eqn{bid1<bid2}{bid1<bid2}. for subjects which answered 'no' to the first bid, \eqn{bid1>bid2}{bid1>bid2}. \emph{z1} to \emph{zn} are additional explaining, subject specific variables. 
 For functionalForm "loglinearWTP" 
 \deqn{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}{yes1 + yes2 ~ bid1 + bid2 | z1 + z2 + ... + zn}
 where bid variables \deqn{log(bid)}{log(bid)} are generated.
