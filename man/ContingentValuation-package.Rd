@@ -12,7 +12,7 @@ This Package will be helpful after you have collected your data in a contingent 
 \tabular{ll}{
 Package: \tab ContingentValuation\cr
 Type: \tab Package\cr
-Version: \tab 0.0.3\cr
+Version: \tab 0.0.4\cr
 Date: \tab 2012-11-30\cr
 License: \tab GPL-2\cr
 }
