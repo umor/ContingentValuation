@@ -16,7 +16,7 @@ If you want to try it out please take the following steps in your R command line
 # now, after having prepared "devtools"
 # you should be ready to install "ContingentValuation" 
 # directly from github by writing
-install_github('ContingentValuation', 'umor')
+install_github("umor/ContingentValuation")
 ```
 
 Please let me know if you have comments on the package.
